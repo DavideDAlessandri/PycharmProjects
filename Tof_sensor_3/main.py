@@ -10,9 +10,11 @@ import struct
 import copy
 import pandas as pd
 
-# logging.basicConfig(filename='value.log', level=logging.INFO)
+limit = 1000    # set sensor max output
+log = False     # enable log data
 
-limit = 1000  # set sensor max output
+if log:
+    logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
 
 class serialPlot:
     def __init__(self, serialPort='/dev/ttyUSB0', serialBaud=38400, plotLength=100, dataNumBytes=2, numPlots=1):
@@ -85,7 +87,9 @@ class serialPlot:
         elif min_value < 50:
             print("Stop")
 
-        # logging.info(value_array)  # to log output values
+        if log:
+            new_value_array = str(value_array)[1:-1]  # crate array without bracket
+            logging.info(new_value_array)  # to log output values
 
     def backgroundThread(self):    # retrieve data
         time.sleep(1.0)  # give some buffer time for retrieving data
