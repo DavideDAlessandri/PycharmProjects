@@ -12,6 +12,7 @@ import pandas as pd
 
 limit = 1000    # set sensor max output
 log = False     # enable log data
+obj = False     # print object detection
 
 if log:
     logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
@@ -76,20 +77,23 @@ class serialPlot:
         # self.csvData.append([self.data[0][-1], self.data[1][-1], self.data[2][-1]])
 
         # print(value_array)
-        # print('The smallest element is: ', min(value_array))
+        print('The smallest element is: ', min(value_array))
         min_value = min(value_array)
-        if min_value >= 300:
-            print(0)
-        elif 150 < min_value < 300:
-            print("Object detected")
-        elif 50 < min_value < 150:
-            print("Slow")
-        elif min_value < 50:
-            print("Stop")
+        if obj:
+            if min_value >= 300:
+                print(0)
+            elif 150 < min_value < 300:
+                print("Object detected")
+            elif 50 < min_value < 150:
+                print("Slow")
+            elif min_value < 50:
+                print("Stop")
 
         if log:
             new_value_array = str(value_array)[1:-1]  # crate array without bracket
             logging.info(new_value_array)  # to log output values
+
+
 
     def backgroundThread(self):    # retrieve data
         time.sleep(1.0)  # give some buffer time for retrieving data
@@ -134,6 +138,7 @@ def main():
     timeText = ax.text(0.70, 0.95, '', transform=ax.transAxes)
     lines = []
     lineValueText = []
+
     for i in range(numPlots):
         lines.append(ax.plot([], [], style[i], label=lineLabel[i])[0])
         lineValueText.append(ax.text(0.70, 0.90-i*0.05, '', transform=ax.transAxes))
