@@ -10,9 +10,9 @@ import struct
 import copy
 import pandas as pd
 
-limit = 1000    # set sensor max output
+limit = 400    # set sensor max output
 log = False     # enable log data
-obj = False     # print object detection
+obj = True     # print object detection
 
 if log:
     logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
@@ -77,7 +77,7 @@ class serialPlot:
         # self.csvData.append([self.data[0][-1], self.data[1][-1], self.data[2][-1]])
 
         # print(value_array)
-        print('The smallest element is: ', min(value_array))
+        # print('The smallest element is: ', min(value_array))
         min_value = min(value_array)
         if obj:
             if min_value >= 300:
