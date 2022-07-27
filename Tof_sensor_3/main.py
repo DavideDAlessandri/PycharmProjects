@@ -22,7 +22,8 @@ saved_data_3 = [0]*array_dimension
 
 if log:
     logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
-    name_array = str(['Sensor 1', 'Sensor 2', 'Sensor 3', 'Min. value original', 'Min value correct'])[1:-1]  # crate array without bracket
+    name_array = str(['Sensor 1', 'Sensor 2', 'Sensor 3', 'Sensor 1 corrected', 'Sensor 2 corrected',
+                      'Sensor 3 corrected', 'Min. value original', 'Min value correct'])[1:-1]
     logging.info(name_array)  # to log output values
 
 class serialPlot:
@@ -90,6 +91,9 @@ class serialPlot:
         saved_data_2.pop(0)  # remove first value of array
         saved_data_3.append(value_array[2])  # add last value to array
         saved_data_3.pop(0)  # remove first value of array
+        log_array = []
+        for x in range(3):
+            log_array.append(value_array[x])
 
         saved_value_1 = 0
         for x in range(array_dimension):
@@ -119,9 +123,11 @@ class serialPlot:
                 print("Stop")
 
         if log:
-            value_array.append(min_value_original)
-            value_array.append(min_value)
-            new_value_array = str(value_array)[1:-1]  # crate array without bracket
+            for x in range(3):
+                log_array.append(value_array[x])
+            log_array.append(min_value_original)
+            log_array.append(min_value)
+            new_value_array = str(log_array)[1:-1]  # crate array without bracket
             logging.info(new_value_array)  # to log output values
 
         if plt_min:
