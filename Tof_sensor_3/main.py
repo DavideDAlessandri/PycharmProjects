@@ -10,12 +10,15 @@ import struct
 import copy
 import pandas as pd
 
-limit = 400    # set sensor max output
+limit = 400     # set sensor max output
 log = False     # enable log data
-obj = True     # print object detection
+obj = True      # print object detection
 plt_min = True  # if true print the min value instead
-array_dimension = 15
-saved_data = [0]*array_dimension  # create an array with old received values
+array_dimension = 15    # create an array with old received values
+
+saved_data_1 = [0]*array_dimension
+saved_data_2 = [0]*array_dimension
+saved_data_3 = [0]*array_dimension
 
 if log:
     logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
@@ -80,21 +83,30 @@ class serialPlot:
                 lines[i].set_data(range(self.plotMaxLength), self.data[i])
                 lineValueText[i].set_text('[' + lineLabel[i] + '] = ' + str(value))
 
-
-        # print(value_array)
-        # print('The smallest element is: ', min(value_array))
-        min_value = min(value_array)
         min_value_original = min(value_array)
-        saved_data.append(min_value)       # add last value to array
-        saved_data.pop(0)                  # remove first value of array
-        # print(saved_data)
+        saved_data_1.append(value_array[0])       # add last value to array
+        saved_data_1.pop(0)                  # remove first value of array
+        saved_data_2.append(value_array[1])  # add last value to array
+        saved_data_2.pop(0)  # remove first value of array
+        saved_data_3.append(value_array[2])  # add last value to array
+        saved_data_3.pop(0)  # remove first value of array
 
-        saved_value = 0
+        saved_value_1 = 0
         for x in range(array_dimension):
-            saved_value = saved_value + saved_data[x]
-        if saved_data[0]*array_dimension-saved_value == 0:      # if we measure the same values the sensor is stuck
-            min_value = limit
-        # print('The smallest value is: ', min_value)
+            saved_value_1 = saved_value_1 + saved_data_1[x]
+        if saved_data_1[0]*array_dimension-saved_value_1 == 0:      # if we measure the same values the sensor is stuck
+            value_array[0] = limit
+        saved_value_2 = 0
+        for x in range(array_dimension):
+            saved_value_2 = saved_value_2 + saved_data_2[x]
+        if saved_data_2[0] * array_dimension - saved_value_2 == 0:  # if we measure the same values the sensor is stuck
+            value_array[1] = limit
+        saved_value_3 = 0
+        for x in range(array_dimension):
+            saved_value_3 = saved_value_3 + saved_data_3[x]
+        if saved_data_3[0] * array_dimension - saved_value_3 == 0:  # if we measure the same values the sensor is stuck
+            value_array[2] = limit
+        min_value = min(value_array)
 
         if obj:
             if min_value >= 300:
