@@ -10,9 +10,10 @@ import struct
 import copy
 import pandas as pd
 
-limit = 1000    # set sensor max output
-log = True     # enable log data
+limit = 400    # set sensor max output
+log = False     # enable log data
 obj = True     # print object detection
+plt_min = True  # if true print the min value instead
 array_dimension = 15
 saved_data = [0]*array_dimension  # create an array with old received values
 
@@ -72,13 +73,13 @@ class serialPlot:
 
             if value > limit:
                 value = limit
-
             value_array.append(value)
 
-            self.data[i].append(value)    # we get the latest data point and append it to our array
-            lines[i].set_data(range(self.plotMaxLength), self.data[i])
-            lineValueText[i].set_text('[' + lineLabel[i] + '] = ' + str(value))
-        # self.csvData.append([self.data[0][-1], self.data[1][-1], self.data[2][-1]])
+            if not plt_min:
+                self.data[i].append(value)  # we get the latest data point and append it to our array
+                lines[i].set_data(range(self.plotMaxLength), self.data[i])
+                lineValueText[i].set_text('[' + lineLabel[i] + '] = ' + str(value))
+
 
         # print(value_array)
         # print('The smallest element is: ', min(value_array))
@@ -110,6 +111,16 @@ class serialPlot:
             value_array.append(min_value)
             new_value_array = str(value_array)[1:-1]  # crate array without bracket
             logging.info(new_value_array)  # to log output values
+
+        if plt_min:
+            plt_min_array = []
+            plt_min_array.append(min_value_original)
+            plt_min_array.append(min_value)
+            plt_min_array.append(-1)
+            for i in range(self.numPlots):
+                self.data[i].append(plt_min_array[i])  # we get the latest data point and append it to our array
+                lines[i].set_data(range(self.plotMaxLength), self.data[i])
+                lineValueText[i].set_text('[' + lineLabel[i] + '] = ' + str(plt_min_array[i]))
 
     def backgroundThread(self):    # retrieve data
         time.sleep(1.0)  # give some buffer time for retrieving data
@@ -149,8 +160,15 @@ def main():
     ax.set_xlabel("Time")
     ax.set_ylabel("Distance")
 
-    lineLabel = ['Sensor 1', 'Sensor 2', 'Sensor 3']
-    style = ['r-', 'c-', 'b-']  # linestyles for the different plots
+    if plt_min:
+        lineLabel = ['Min. value', 'Min value corrected', '-']
+    else:
+        lineLabel = ['Sensor 1', 'Sensor 2', 'Sensor 3']
+    if plt_min:
+        style = ['#FFF157', 'r-', 'w-']  # linestyles for the different plots
+    else:
+        style = ['r-', 'c-', 'b-']  # linestyles for the different plots
+
     timeText = ax.text(0.70, 0.95, '', transform=ax.transAxes)
     lines = []
     lineValueText = []
