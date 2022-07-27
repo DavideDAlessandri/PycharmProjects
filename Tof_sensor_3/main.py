@@ -10,9 +10,11 @@ import struct
 import copy
 import pandas as pd
 
-limit = 400    # set sensor max output
+limit = 1000    # set sensor max output
 log = False     # enable log data
 obj = True     # print object detection
+array_dimension = 15
+saved_data = [0]*array_dimension  # create an array with old received values
 
 if log:
     logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
@@ -79,6 +81,17 @@ class serialPlot:
         # print(value_array)
         # print('The smallest element is: ', min(value_array))
         min_value = min(value_array)
+        saved_data.append(min_value)       # add last value to array
+        saved_data.pop(0)                  # remove first value of array
+        # print(saved_data)
+
+        saved_value = 0
+        for x in range(array_dimension):
+            saved_value = saved_value + saved_data[x]
+        if saved_data[0]*array_dimension-saved_value == 0:      # if we measure the same values the sensor is stuck
+            min_value = limit
+        # print('The smallest value is: ', min_value)
+
         if obj:
             if min_value >= 300:
                 print(0)
@@ -92,8 +105,6 @@ class serialPlot:
         if log:
             new_value_array = str(value_array)[1:-1]  # crate array without bracket
             logging.info(new_value_array)  # to log output values
-
-
 
     def backgroundThread(self):    # retrieve data
         time.sleep(1.0)  # give some buffer time for retrieving data
