@@ -11,13 +11,15 @@ import copy
 import pandas as pd
 
 limit = 1000    # set sensor max output
-log = False     # enable log data
+log = True     # enable log data
 obj = True     # print object detection
 array_dimension = 15
 saved_data = [0]*array_dimension  # create an array with old received values
 
 if log:
     logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
+    name_array = str(['Sensor 1', 'Sensor 2', 'Sensor 3', 'Min. value original', 'Min value correct'])[1:-1]  # crate array without bracket
+    logging.info(name_array)  # to log output values
 
 class serialPlot:
     def __init__(self, serialPort='/dev/ttyUSB0', serialBaud=38400, plotLength=100, dataNumBytes=2, numPlots=1):
@@ -81,6 +83,7 @@ class serialPlot:
         # print(value_array)
         # print('The smallest element is: ', min(value_array))
         min_value = min(value_array)
+        min_value_original = min(value_array)
         saved_data.append(min_value)       # add last value to array
         saved_data.pop(0)                  # remove first value of array
         # print(saved_data)
@@ -103,6 +106,8 @@ class serialPlot:
                 print("Stop")
 
         if log:
+            value_array.append(min_value_original)
+            value_array.append(min_value)
             new_value_array = str(value_array)[1:-1]  # crate array without bracket
             logging.info(new_value_array)  # to log output values
 
