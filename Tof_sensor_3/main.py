@@ -10,10 +10,11 @@ import struct
 import copy
 import pandas as pd
 
-limit = 400     # set sensor max output
+limit = 1000     # set sensor max output
 log = False     # enable log data
 obj = True      # print object detection
-plt_min = True  # if true print the min value instead
+plt_min = False  # if true print the min value instead
+plt_err = True  # if true print the corrected error values instead
 array_dimension = 15    # create an array with old received values
 
 saved_data_1 = [0]*array_dimension
@@ -79,7 +80,7 @@ class serialPlot:
                 value = limit
             value_array.append(value)
 
-            if not plt_min:
+            if (not plt_min) and (not plt_err):
                 self.data[i].append(value)  # we get the latest data point and append it to our array
                 lines[i].set_data(range(self.plotMaxLength), self.data[i])
                 lineValueText[i].set_text('[' + lineLabel[i] + '] = ' + str(value))
@@ -92,6 +93,7 @@ class serialPlot:
         saved_data_3.append(value_array[2])  # add last value to array
         saved_data_3.pop(0)  # remove first value of array
         log_array = []
+
         for x in range(3):
             log_array.append(value_array[x])
 
@@ -111,6 +113,12 @@ class serialPlot:
         if saved_data_3[0] * array_dimension - saved_value_3 == 0:  # if we measure the same values the sensor is stuck
             value_array[2] = limit
         min_value = min(value_array)
+
+        if plt_err:
+            for i in range(self.numPlots):
+                self.data[i].append(value_array[i])  # we get the latest data point and append it to our array
+                lines[i].set_data(range(self.plotMaxLength), self.data[i])
+                lineValueText[i].set_text('[' + lineLabel[i] + '] = ' + str(value_array[i]))
 
         if obj:
             if min_value >= 300:
