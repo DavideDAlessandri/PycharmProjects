@@ -16,6 +16,7 @@ obj = True      # print object detection
 plt_min = False  # if true print the min value instead
 plt_err = True  # if true print the corrected error values instead
 array_dimension = 15    # create an array with old received values
+frequency = 50
 
 saved_data_1 = [0]*array_dimension
 saved_data_2 = [0]*array_dimension
@@ -175,7 +176,7 @@ def main():
     s.readSerialStart()                                               # starts background thread
 
     # plotting starts below
-    pltInterval = 50    # Period at which the plot animation updates [ms]
+    pltInterval = frequency    # Period at which the plot animation updates [ms]
     xmin = 0
     xmax = maxPlotLength
     ymin = -(1)
