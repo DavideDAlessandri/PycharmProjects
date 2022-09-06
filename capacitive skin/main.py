@@ -13,6 +13,8 @@ import pandas as pd
 limit = 300     # set sensor max output
 log = False     # enable log data
 obj = False      # print object detection
+del_err = False  # delete robot error
+del_err_val = 50  # deleted error
 
 if log:
     logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
@@ -53,6 +55,11 @@ class serialPlot:
         self.previousTimer = currentTimer
         timeText.set_text('Plot Interval = ' + str(self.plotTimer) + 'ms')
         value, = struct.unpack('f', self.rawData)    # use 'h' for a 2 byte integer
+        if del_err:
+            if value < del_err_val:
+                value = 0
+            else:
+                value = value - del_err_val
         self.data.append(value)    # we get the latest data point and append it to our array
         lines.set_data(range(self.plotMaxLength), self.data)
         lineValueText.set_text('[' + lineLabel + '] = ' + str(value))
