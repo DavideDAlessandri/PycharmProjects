@@ -10,7 +10,12 @@ import struct
 import logging
 import pandas as pd
 
-logging.basicConfig(filename='value.log', level=logging.INFO)
+limit = 300     # set sensor max output
+log = False     # enable log data
+obj = False      # print object detection
+
+if log:
+    logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
 
 class serialPlot:
     def __init__(self, serialPort = 'COM5', serialBaud = 115200, plotLength = 100, dataNumBytes = 4):
@@ -54,16 +59,18 @@ class serialPlot:
         # self.csvData.append(self.data[-1])
 
         # output_string = str(self.rawData, 'utf-8')
-        logging.info(value)
+        if log:
+            logging.info(value)
 
-        if value < 20:
-            print(0)
-        # elif value > 30 and value < 40 :
-        #    print("Object detected")
-        # elif value > 40 and value < 150 :
-        #    print("Push")
-        elif value > 20 :
-            print("Object detected")
+        if obj:
+            if value < 20:
+                print(0)
+            # elif value > 30 and value < 40 :
+            #    print("Object detected")
+            # elif value > 40 and value < 150 :
+            #    print("Push")
+            elif value > 20 :
+                print("Object detected")
 
 
 
@@ -98,7 +105,7 @@ def main():
     xmin = 0
     xmax = maxPlotLength
     ymin = -(1)
-    ymax = 800
+    ymax = limit
     fig = plt.figure()
     ax = plt.axes(xlim=(xmin, xmax), ylim=(float(ymin - (ymax - ymin) / 10), float(ymax + (ymax - ymin) / 10)))
     ax.set_title('Serial Read')
