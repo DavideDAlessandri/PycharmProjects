@@ -113,7 +113,7 @@ def main():
     xmax = maxPlotLength
     ymin = -(1)
     ymax = limit
-    fig = plt.figure()
+    fig = plt.figure(figsize=(10, 8))
     ax = plt.axes(xlim=(xmin, xmax), ylim=(float(ymin - (ymax - ymin) / 10), float(ymax + (ymax - ymin) / 10)))
     ax.set_title('Serial Read')
     ax.set_xlabel("time")
