@@ -9,10 +9,10 @@ import matplotlib.animation as animation
 import struct
 import copy
 
-limit = 1000    # set sensor max output
+limit = 400    # set sensor max output
 log = False     # enable log data
 obj = False     # print object detection
-plt_err = False  # if true print the corrected error values instead
+plt_err = False  # if true print the corrected error values instead !!!not working!!!
 array_dimension = 15
 saved_data = [0]*array_dimension  # create an array with old received values
 
@@ -156,11 +156,16 @@ def main():
     fig, ax = plt.subplots(3, 2)
     fig.set_figheight(8.5)
     fig.set_figwidth(13)
+    ax[2, 0].set_xlabel("Time")
+    ax[2, 1].set_xlabel("Time")
+    ax[0, 0].set_ylabel("Distance")
+    ax[1, 0].set_ylabel("Distance")
+    ax[2, 0].set_ylabel("Distance")
 
     for i in range(numPlots):
         argument = i
         ax[conv_num_x(argument), conv_num_y(argument)].set_xlim([0, maxPlotLength])
-        ax[conv_num_x(argument), conv_num_y(argument)].set_ylim([-1, limit + 200])
+        ax[conv_num_x(argument), conv_num_y(argument)].set_ylim([-1, limit + 100])
         ax[conv_num_x(argument), conv_num_y(argument)].set_title(lineLabelText[i])
         lines = ax[conv_num_x(argument), conv_num_y(argument)].plot([], [], style[i])[0]
         anim.append(animation.FuncAnimation(fig, s.getSerialData, fargs=(lines,  lineLabelText[i], i), interval=pltInterval))  # fargs has to be a tuple
