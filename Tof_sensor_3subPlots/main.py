@@ -15,6 +15,10 @@ obj = False     # print object detection
 array_dimension = 15
 saved_data = [0]*array_dimension  # create an array with old received values
 
+saved_data_1 = [0]*array_dimension
+saved_data_2 = [0]*array_dimension
+saved_data_3 = [0]*array_dimension
+
 class serialPlot:
     def __init__(self, serialPort='/dev/ttyUSB0', serialBaud=38400, plotLength=100, dataNumBytes=2, numPlots=1):
         self.port = serialPort
@@ -127,20 +131,16 @@ def main():
     # plotting starts below
     pltInterval = 50    # Period at which the plot animation updates [ms]
     lineLabelText = ['Sensor 1', 'Sensor 2', 'Sensor 3']
-    title = ['Sensor 1', 'Sensor 2', 'Sensor 3']
-    xLimit = [(0, maxPlotLength), (0, maxPlotLength), (0, maxPlotLength)]
-    yLimit = [(-1, limit + 200), (-1, limit + 200), (-1, limit + 200)]
     style = ['r-', 'g-', 'b-']    # linestyles for the different plots
     anim = []
-    fig, ax = plt.subplots(3)  # xLimit[i], yLimit[i], title[i]
-    fig.suptitle('Tof Sensors')
+    fig, ax = plt.subplots(3)
+
     for i in range(numPlots):
-        #ax[i] = plt.axes(xLimit[i],yLimit[i])
-        lines = ax[i].plot([], [], style[i], label=lineLabelText[i])[0]
-        #timeText = ax[i].text(0.50, 0.95, '', transform=ax.transAxes)
-        #lineValueText = ax[i].text(0.50, 0.90, '', transform=ax.transAxes)
+        ax[i].set_xlim([0, maxPlotLength])
+        ax[i].set_ylim([-1, limit + 200])
+        ax[i].set_title(lineLabelText[i])
+        lines = ax[i].plot([], [], style[i])[0]
         anim.append(animation.FuncAnimation(fig, s.getSerialData, fargs=(lines,  lineLabelText[i], i), interval=pltInterval))  # fargs has to be a tuple
-        plt.legend(loc="upper left")
     plt.show()
 
     s.close()
