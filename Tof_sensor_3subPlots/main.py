@@ -12,7 +12,7 @@ import copy
 limit = 1000    # set sensor max output
 log = False     # enable log data
 obj = False     # print object detection
-plt_err = True  # if true print the corrected error values instead
+plt_err = False  # if true print the corrected error values instead
 array_dimension = 15
 saved_data = [0]*array_dimension  # create an array with old received values
 
