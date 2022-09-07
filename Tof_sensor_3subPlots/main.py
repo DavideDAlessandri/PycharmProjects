@@ -12,12 +12,9 @@ import copy
 limit = 1000    # set sensor max output
 log = False     # enable log data
 obj = False     # print object detection
+plt_err = True  # if true print the corrected error values instead
 array_dimension = 15
 saved_data = [0]*array_dimension  # create an array with old received values
-
-saved_data_1 = [0]*array_dimension
-saved_data_2 = [0]*array_dimension
-saved_data_3 = [0]*array_dimension
 
 class serialPlot:
     def __init__(self, serialPort='/dev/ttyUSB0', serialBaud=38400, plotLength=100, dataNumBytes=2, numPlots=1):
@@ -63,7 +60,6 @@ class serialPlot:
             self.plotTimer = int((currentTimer - self.previousTimer) * 1000)     # the first reading will be erroneous
             self.previousTimer = currentTimer
         self.privateData = copy.deepcopy(self.rawData)    # so that the 3 values in our plots will be synchronized to the same sample time
-        #timeText.set_text('Plot Interval = ' + str(self.plotTimer) + 'ms')
         data = self.privateData[(pltNumber*self.dataNumBytes):(self.dataNumBytes + pltNumber*self.dataNumBytes)]
         value,  = struct.unpack(self.dataType, data)
         value_array = []
@@ -71,18 +67,18 @@ class serialPlot:
             value = limit
         value_array.append(value)
 
+        min_value = min(value_array)
+        if plt_err:
+            saved_data.append(min_value)  # add last value to array
+            saved_data.pop(0)  # remove first value of array
+            saved_value = 0
+            for x in range(array_dimension):
+                saved_value = saved_value + saved_data[x]
+            if saved_data[0] * array_dimension - saved_value == 0:  # if we measure the same values the sensor is stuck
+                min_value = limit
+
         self.data[pltNumber].append(value)    # we get the latest data point and append it to our array
         lines.set_data(range(self.plotMaxLength), self.data[pltNumber])
-        #lineValueText.set_text('[' + lineLabel + '] = ' + str(value))
-
-        min_value = min(value_array)
-        saved_data.append(min_value)  # add last value to array
-        saved_data.pop(0)  # remove first value of array
-        saved_value = 0
-        for x in range(array_dimension):
-            saved_value = saved_value + saved_data[x]
-        if saved_data[0] * array_dimension - saved_value == 0:  # if we measure the same values the sensor is stuck
-            min_value = limit
 
         if obj:
             if min_value >= 300:
@@ -134,6 +130,8 @@ def main():
     style = ['r-', 'g-', 'b-']    # linestyles for the different plots
     anim = []
     fig, ax = plt.subplots(3)
+    fig.set_figheight(8)
+    fig.set_figwidth(10)
 
     for i in range(numPlots):
         ax[i].set_xlim([0, maxPlotLength])
