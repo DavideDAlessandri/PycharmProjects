@@ -115,16 +115,28 @@ def makeFigure(xLimit, yLimit, title):
     return fig, ax
 
 
-def numbers_to_strings(argument):
+def conv_num_x(argument):
     switcher = {
-        0: [0, 0],
-        1: [0, 1],
-        2: [1, 0],
-        3: [1, 1],
-        4: [2, 0],
-        5: [1, 2],
+        0: 0,
+        1: 1,
+        2: 2,
+        3: 0,
+        4: 1,
+        5: 2,
     }
-    return switcher.get(argument, [0, 0])
+    return switcher.get(argument, 0)
+
+
+def conv_num_y(argument):
+    switcher = {
+        0: 0,
+        1: 0,
+        2: 0,
+        3: 1,
+        4: 1,
+        5: 1,
+    }
+    return switcher.get(argument, 0)
 
 
 def main():
@@ -138,19 +150,19 @@ def main():
 
     # plotting starts below
     pltInterval = 50    # Period at which the plot animation updates [ms]
-    lineLabelText = ['Sensor 1', 'Sensor 2', 'Sensor 3']
-    style = ['r-', 'g-', 'b-']    # linestyles for the different plots
+    lineLabelText = ['Sensor 1', 'Sensor 2', 'Sensor 3','Sensor 4', 'Sensor 5', 'Sensor 6']
+    style = ['r-', 'g-', 'b-', 'c-', 'm-', 'y-']    # linestyles for the different plots
     anim = []
-    fig, ax = plt.subplots(2, 3)
-    fig.set_figheight(8)
-    fig.set_figwidth(10)
+    fig, ax = plt.subplots(3, 2)
+    fig.set_figheight(8.5)
+    fig.set_figwidth(13)
 
     for i in range(numPlots):
         argument = i
-        ax[numbers_to_strings(argument)].set_xlim([0, maxPlotLength])
-        ax[numbers_to_strings(argument)].set_ylim([-1, limit + 200])
-        ax[numbers_to_strings(argument)].set_title(lineLabelText[i])
-        lines = ax[numbers_to_strings(argument)].plot([], [], style[i])[0]
+        ax[conv_num_x(argument), conv_num_y(argument)].set_xlim([0, maxPlotLength])
+        ax[conv_num_x(argument), conv_num_y(argument)].set_ylim([-1, limit + 200])
+        ax[conv_num_x(argument), conv_num_y(argument)].set_title(lineLabelText[i])
+        lines = ax[conv_num_x(argument), conv_num_y(argument)].plot([], [], style[i])[0]
         anim.append(animation.FuncAnimation(fig, s.getSerialData, fargs=(lines,  lineLabelText[i], i), interval=pltInterval))  # fargs has to be a tuple
     plt.show()
 
