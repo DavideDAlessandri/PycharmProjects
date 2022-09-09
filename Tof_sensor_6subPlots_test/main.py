@@ -98,9 +98,8 @@ class serialPlot:
                 print("Stop")
 
         if log:
-            saved_data.append(min_value)  # add last value to array
-            saved_data.pop(0)  # remove first value of array
-            print(saved_data)
+            saved_data[pltNumber] = min_value
+            # print(saved_data)
             new_value_array = str(saved_data)[1:-1]  # crate array without bracket
             logging.info(new_value_array)  # to log output values
 
