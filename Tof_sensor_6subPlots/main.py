@@ -8,13 +8,20 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import struct
 import copy
+import logging
 
 limit = 400    # set sensor max output
 log = False     # enable log data
 obj = False     # print object detection
 plt_err = False  # if true print the corrected error values instead !!!not working!!!
-array_dimension = 15
+array_dimension = 6
 saved_data = [0]*array_dimension  # create an array with old received values
+
+if log:
+    logging.basicConfig(filename='value.log', level=logging.INFO, format='%(message)s')
+    name_array = str(['Sensor 1', 'Sensor 2', 'Sensor 3', 'Sensor 4', 'Sensor 5',
+                      'Sensor 6'])[1:-1]
+    logging.info(name_array)  # to log output values
 
 class serialPlot:
     def __init__(self, serialPort='/dev/ttyUSB0', serialBaud=38400, plotLength=100, dataNumBytes=2, numPlots=1):
@@ -89,6 +96,12 @@ class serialPlot:
                 print("Slow")
             elif min_value < 50:
                 print("Stop")
+
+        if log:
+            saved_data[pltNumber] = min_value
+            # print(saved_data)
+            new_value_array = str(saved_data)[1:-1]  # crate array without bracket
+            logging.info(new_value_array)  # to log output values
 
     def backgroundThread(self):    # retrieve data
         time.sleep(1.0)  # give some buffer time for retrieving data
