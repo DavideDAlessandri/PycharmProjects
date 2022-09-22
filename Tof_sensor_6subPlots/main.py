@@ -10,7 +10,7 @@ import struct
 import copy
 import logging
 
-limit = 500    # set sensor max output
+limit = 1000    # set sensor max output
 log = False     # enable log data
 obj = False     # print object detection
 plt_err = False  # if true print the corrected error values instead !!!not working!!!
@@ -162,7 +162,7 @@ def main():
     s.readSerialStart()                                               # starts background thread
 
     # plotting starts below
-    pltInterval = 110    # Period at which the plot animation updates [ms]
+    pltInterval = 15    # Period at which the plot animation updates [ms]
     lineLabelText = ['Sensor 1', 'Sensor 2', 'Sensor 3','Sensor 4', 'Sensor 5', 'Sensor 6']
     style = ['r-', 'g-', 'b-', 'c-', 'm-', 'y-']    # linestyles for the different plots
     anim = []
