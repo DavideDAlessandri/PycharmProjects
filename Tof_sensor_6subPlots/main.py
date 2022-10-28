@@ -153,7 +153,7 @@ def conv_num_y(argument):
 
 
 def main():
-    portName = 'COM7'
+    portName = 'COM10'
     baudRate = 115200
     maxPlotLength = 100  # number of points in x-axis of real time plot
     dataNumBytes = 2  # number of bytes of 1 data point
